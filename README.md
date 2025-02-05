@@ -6,7 +6,7 @@ Let's provision three GPU nodes and create a Kubernetes cluster from scratch, th
   * We'll observe the issues with Ollama out of the box: highly restricted context lengths and "lobotomized" quantization
 2. vLLM with Helix.ml on top
   * We'll use this to motivate the issues that lead us to bake model weights into docker images and write our own GPU scheduler!
-3. Helix.ml with its GPU scheduler
+3. TODO: Helix.ml with its GPU scheduler
 
 ## Deploying the Kubernetes cluster
 
