@@ -143,14 +143,20 @@ Notice that it gets confused.
 
 Fix: use a q8_0 variant of the model weights. Note this will increase GPU memory usage.
 
-Also note that Ollama aggressively unloads models, which we don't want in production!
 
 ## Observe issues with quadratic memory usage
 
-Fixes:
+Fix:
 ```
 		"OLLAMA_KEEP_ALIVE=-1",
 		"OLLAMA_FLASH_ATTENTION=1",
+```
+
+Also note that Ollama aggressively unloads models, which we don't want in production!
+
+Fix:
+```
+		"OLLAMA_KEEP_ALIVE=-1",
 ```
 
 Additionally, using a quantized kv cache helps reduce long context GPU memory usage:
