@@ -44,7 +44,7 @@ Edit the `kubeconfig` and add the following line to the cluster:
     insecure-skip-tls-verify: true
 ```
 
-(in practice, you'd want to configure the cluster to include the server's public IP address in the certificate)
+(in practice, you'd want to configure the cluster to include the server's public IP address in the certificate, or use a DNS name e.g. with multiple A records)
 
 For example:
 ```
@@ -79,7 +79,9 @@ NAME            STATUS   ROLES                  AGE    VERSION
 
 ### Configure NVIDIA device plugin on these nodes
 
-First let's make nvidia the default container runtime on these k3s nodes:
+The NVIDIA drivers and NVIDIA container runtime are fortunately already installed on these Lambdalabs machines.
+
+To make k3s work with NVIDIA, first let's make nvidia the default container runtime on these k3s nodes ([ref](https://github.com/NVIDIA/k8s-device-plugin/issues/406#issuecomment-1852531772)):
 
 ```
 sudo cp /var/lib/rancher/k3s/agent/etc/containerd/config.toml /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
@@ -101,12 +103,97 @@ On the other nodes:
 sudo systemctl restart k3s-agent
 ```
 
+You should now see NVIDIA GPUs in the output of:
+```
+sudo kubectl describe nodes | grep nvidia.com/gpu.count
+```
+e.g.
+```
+                    nvidia.com/gpu.count=1
+```
+
 # Deploy Open WebUI with Ollama
 
+```
+helm repo add open-webui https://helm.openwebui.com/
+helm repo update
+```
 ```
 helm upgrade --install --set image.tag=v0.5.7 open-webui open-webui/open-webui
 ```
 
-(Use a newer version of webui if there's one available)
+(Use a newer version of webui if there's one available, check on [webui github releases](https://github.com/open-webui/open-webui/releases))
 
+Copy and paste the port-forward command after the `helm upgrade`.
 
+Click buttons in the web UI to deploy `llama3.1:8b`
+
+## Observe issues with context length
+
+Paste in a large JSON response and observe that the LLM simply truncates that message!
+
+Fix: pass `num_ctx` through ollama API (doesn't work in OpenAI compatible API)
+
+Note this will increase GPU memory usage.
+
+## Observe issues with quantization
+
+Ask the LLM: What is real?
+Notice that it gets confused.
+
+Fix: use a q8_0 variant of the model weights. Note this will increase GPU memory usage.
+
+Also note that Ollama aggressively unloads models, which we don't want in production!
+
+## Observe issues with quadratic memory usage
+
+Fixes:
+```
+		"OLLAMA_KEEP_ALIVE=-1",
+		"OLLAMA_FLASH_ATTENTION=1",
+```
+
+Additionally, using a quantized kv cache helps reduce long context GPU memory usage:
+```
+		"OLLAMA_KV_CACHE_TYPE=q8_0",
+```
+
+# Deploy vLLM
+
+Edit `vllm/secret.yaml` to add your huggingface token.
+Ensure you accept the terms at [https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3)
+
+```
+cd vllm
+kubectl apply -f secret.yaml
+kubectl apply -f pvc.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+
+## Deploy Helix.ml configured as a frontend to vLLM
+
+```
+helm upgrade --install keycloak oci://registry-1.docker.io/bitnamicharts/keycloak \
+  --version "24.3.1" \
+  --set image.tag="23.0.7" \
+  --set auth.adminUser=admin \
+  --set auth.adminPassword=oh-hallo-insecure-password \
+  --set httpRelativePath="/auth/"
+```
+```
+cd helix
+helm repo add helix https://charts.helix.ml
+helm repo update
+```
+
+```
+export LATEST_RELEASE=$(curl -s https://get.helix.ml/latest.txt)
+helm upgrade --install my-helix-controlplane helix/helix-controlplane \
+  -f values-example.yaml \
+  --set image.tag="${LATEST_RELEASE}"
+```
+
+Copy and paste the port-forward command after the `helm upgrade` and load in your browser.
+
+Create an account, log in, and observe nice, fast vLLM powered inference, e.g. for API integrations and RAG.

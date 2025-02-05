@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mistral-7b
+  namespace: default
+spec:
+  ports:
+  - name: http-mistral-7b
+    port: 80
+    protocol: TCP
+    targetPort: 8000
+  # The label selector should match the deployment labels & it is useful for prefix caching feature
+  selector:
+    app: mistral-7b
+  sessionAffinity: None
+  type: ClusterIP
