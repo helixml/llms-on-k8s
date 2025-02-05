@@ -148,7 +148,6 @@ Fix: use a q8_0 variant of the model weights. Note this will increase GPU memory
 
 Fix:
 ```
-		"OLLAMA_KEEP_ALIVE=-1",
 		"OLLAMA_FLASH_ATTENTION=1",
 ```
 
