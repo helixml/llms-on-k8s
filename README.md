@@ -125,6 +125,10 @@ helm upgrade --install --set image.tag=v0.5.7 open-webui open-webui/open-webui
 (Use a newer version of webui if there's one available, check on [webui github releases](https://github.com/open-webui/open-webui/releases))
 
 Copy and paste the port-forward command after the `helm upgrade`.
+To get back to this later:
+```
+helm status open-webui
+```
 
 Click buttons in the web UI to deploy `llama3.1:8b`
 
@@ -200,5 +204,10 @@ helm upgrade --install my-helix-controlplane helix/helix-controlplane \
 ```
 
 Copy and paste the port-forward command after the `helm upgrade` and load in your browser.
+
+To get back to this later:
+```
+helm status my-helix-controlplane
+```
 
 Create an account, log in, and observe nice, fast vLLM powered inference, e.g. for API integrations and RAG.
