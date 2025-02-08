@@ -39,27 +39,11 @@ sudo cat /etc/rancher/k3s/k3s.yaml
 ```
 Replace `127.0.0.1` with the IP of the first server.
 
-Edit the `kubeconfig` and add the following line to the cluster:
-```
-    insecure-skip-tls-verify: true
-```
-
-(in practice, you'd want to configure the cluster to include the server's public IP address in the certificate, or use a DNS name e.g. with multiple A records)
-
-For example:
-```
-apiVersion: v1
-clusters:
-- cluster:
-    insecure-skip-tls-verify: true
-    server: https://129.146.62.66:6443
-  name: default
-[...]
-```
-Alternatively you can also run
+Skip TLS verification for now, so we can connect to the public IP:
 ```
 kubectl config set-cluster default --insecure-skip-tls-verify=true
 ```
+(in practice, you'd want to configure the cluster to include the server's public IP address in the certificate, or use a DNS name e.g. with multiple A records)
 
 Now you should be able to run, from your local machine:
 ```
@@ -101,6 +85,11 @@ sudo systemctl restart k3s
 On the other nodes:
 ```
 sudo systemctl restart k3s-agent
+```
+
+Install the device plugin:
+```
+kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.17.0/deployments/static/nvidia-device-plugin.yml
 ```
 
 You should now see NVIDIA GPUs in the output of:
