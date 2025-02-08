@@ -190,7 +190,7 @@ helm repo update
 ```
 export LATEST_RELEASE=$(curl -s https://get.helix.ml/latest.txt)
 helm upgrade --install my-helix-controlplane helix/helix-controlplane \
-  -f values-example.yaml \
+  -f values-vllm.yaml \
   --set image.tag="${LATEST_RELEASE}"
 ```
 
