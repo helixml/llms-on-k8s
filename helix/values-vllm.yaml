@@ -5,8 +5,7 @@
 global:
   # Set this AND envVariables.APP_URL to the public URL of your hostname, e.g.
   # https://helix.mydomain.com if you have set up TLS termination.
-  #serverUrl: http://localhost:8080
-  serverUrl: YOUR_URL_HERE # e.g. http://129-146-62-66.helix.cluster.world:8080
+  serverUrl: http://localhost:8080
 
 image:
   # It's good practice to pin the version of the software you're running!
@@ -16,7 +15,7 @@ image:
 
 envVariables:
   LOG_LEVEL: debug
-  APP_URL: YOUR_URL_HERE # e.g. http://129-146-62-66.helix.cluster.world:8080
+  APP_URL: http://localhost:8080
   # Database
   POSTGRES_HOST: my-helix-controlplane-postgresql
   POSTGRES_USER: helix
