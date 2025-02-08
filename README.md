@@ -71,11 +71,11 @@ To make k3s work with NVIDIA, first let's make nvidia the default container runt
 sudo cp /var/lib/rancher/k3s/agent/etc/containerd/config.toml /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
 ```
 
-Edit `/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl` to add 'default_runtime_name = "nvidia"' as below:
+Edit `/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl` to add `default_runtime_name = "nvidia"` as below:
 
 ```
 [plugins."io.containerd.grpc.v1.cri".containerd]
-default_runtime_name = "nvidia"
+  default_runtime_name = "nvidia"
 ```
 
 On the first node:
