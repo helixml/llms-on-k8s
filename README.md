@@ -94,11 +94,13 @@ kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.
 
 You should now see NVIDIA GPUs in the output of:
 ```
-sudo kubectl describe nodes | grep nvidia.com/gpu.count
+sudo kubectl describe nodes | grep nvidia.com/gpu
 ```
 e.g.
 ```
-                    nvidia.com/gpu.count=1
+  nvidia.com/gpu:     1
+  nvidia.com/gpu:     1
+  nvidia.com/gpu     0           0
 ```
 
 # Deploy Open WebUI with Ollama
