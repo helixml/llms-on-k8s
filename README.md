@@ -39,27 +39,11 @@ sudo cat /etc/rancher/k3s/k3s.yaml
 ```
 Replace `127.0.0.1` with the IP of the first server.
 
-Edit the `kubeconfig` and add the following line to the cluster:
-```
-    insecure-skip-tls-verify: true
-```
-
-(in practice, you'd want to configure the cluster to include the server's public IP address in the certificate, or use a DNS name e.g. with multiple A records)
-
-For example:
-```
-apiVersion: v1
-clusters:
-- cluster:
-    insecure-skip-tls-verify: true
-    server: https://129.146.62.66:6443
-  name: default
-[...]
-```
-Alternatively you can also run
+Skip TLS verification for now, so we can connect to the public IP:
 ```
 kubectl config set-cluster default --insecure-skip-tls-verify=true
 ```
+(in practice, you'd want to configure the cluster to include the server's public IP address in the certificate, or use a DNS name e.g. with multiple A records)
 
 Now you should be able to run, from your local machine:
 ```
@@ -87,11 +71,11 @@ To make k3s work with NVIDIA, first let's make nvidia the default container runt
 sudo cp /var/lib/rancher/k3s/agent/etc/containerd/config.toml /var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl
 ```
 
-Edit `/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl` to add 'default_runtime_name = "nvidia"' as below:
+Edit `/var/lib/rancher/k3s/agent/etc/containerd/config.toml.tmpl` to add `default_runtime_name = "nvidia"` as below:
 
 ```
 [plugins."io.containerd.grpc.v1.cri".containerd]
-default_runtime_name = "nvidia"
+  default_runtime_name = "nvidia"
 ```
 
 On the first node:
@@ -103,13 +87,20 @@ On the other nodes:
 sudo systemctl restart k3s-agent
 ```
 
+Install the device plugin:
+```
+kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.17.0/deployments/static/nvidia-device-plugin.yml
+```
+
 You should now see NVIDIA GPUs in the output of:
 ```
-sudo kubectl describe nodes | grep nvidia.com/gpu.count
+sudo kubectl describe nodes | grep nvidia.com/gpu
 ```
 e.g.
 ```
-                    nvidia.com/gpu.count=1
+  nvidia.com/gpu:     1
+  nvidia.com/gpu:     1
+  nvidia.com/gpu     0           0
 ```
 
 # Deploy Open WebUI with Ollama
@@ -199,7 +190,7 @@ helm repo update
 ```
 export LATEST_RELEASE=$(curl -s https://get.helix.ml/latest.txt)
 helm upgrade --install my-helix-controlplane helix/helix-controlplane \
-  -f values-example.yaml \
+  -f values-vllm.yaml \
   --set image.tag="${LATEST_RELEASE}"
 ```
 
