@@ -171,6 +171,22 @@ kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 ```
 
+You may need to update the deployment to be more patient since the download of the model weights is unlikely to be faster than the readiness probe timeout, leading to infinite crashlooping/downloading:
+```
+kubectl patch deployment mistral-7b --type=json -p='[
+  {
+    "op": "replace",
+    "path": "/spec/template/spec/containers/0/livenessProbe/initialDelaySeconds",
+    "value": 6000
+  },
+  {
+    "op": "replace",
+    "path": "/spec/template/spec/containers/0/readinessProbe/initialDelaySeconds",
+    "value": 6000
+  }
+]'
+```
+
 ## Deploy Helix.ml configured as a frontend to vLLM
 
 ```
