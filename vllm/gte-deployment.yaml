@@ -1,35 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mistral-7b
+  name: vllm-gte
   namespace: default
   labels:
-    app: mistral-7b
+    app: vllm-gte
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mistral-7b
+      app: vllm-gte
   template:
     metadata:
       labels:
-        app: mistral-7b
+        app: vllm-gte
     spec:
       volumes:
       - name: cache-volume
         persistentVolumeClaim:
-          claimName: mistral-7b
-      # vLLM needs to access the host's shared memory for tensor parallel inference.
+          claimName: vllm-gte-models
       - name: shm
         emptyDir:
           medium: Memory
-          sizeLimit: "2Gi"
+          sizeLimit: "8Gi"
       containers:
-      - name: mistral-7b
+      - name: vllm-server
         image: vllm/vllm-openai:latest
         command: ["/bin/sh", "-c"]
         args: [
-          "vllm serve mistralai/Mistral-7B-Instruct-v0.3 --trust-remote-code --enable-chunked-prefill --max_num_batched_tokens 1024"
+          "vllm serve --model thenlper/gte-small --trust-remote-code"
         ]
         env:
         - name: HUGGING_FACE_HUB_TOKEN
@@ -41,12 +40,12 @@ spec:
         - containerPort: 8000
         resources:
           limits:
-            cpu: "10"
-            memory: 20G
+            cpu: "8"
+            memory: "16Gi"
             nvidia.com/gpu: "1"
           requests:
-            cpu: "2"
-            memory: 6G
+            cpu: "4"
+            memory: "12Gi"
             nvidia.com/gpu: "1"
         volumeMounts:
         - mountPath: /root/.cache/huggingface
@@ -57,11 +56,11 @@ spec:
           httpGet:
             path: /health
             port: 8000
-          initialDelaySeconds: 60
+          initialDelaySeconds: 300000
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /health
             port: 8000
-          initialDelaySeconds: 60
-          periodSeconds: 5
+          initialDelaySeconds: 300000
+          periodSeconds: 5 

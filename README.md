@@ -87,21 +87,42 @@ On the other nodes:
 sudo systemctl restart k3s-agent
 ```
 
-Install the device plugin:
+Create a ConfigMap for the NVIDIA device plugin configuration:
+```
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nvidia-device-plugin-config
+  namespace: kube-system
+data:
+  config.yaml: |
+    version: v1
+    sharing:
+      timeSlicing:
+        resources:
+          - name: nvidia.com/gpu
+            replicas: 2
+EOF
+```
+
+Install the device plugin with time-slicing configuration:
 ```
 kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.17.0/deployments/static/nvidia-device-plugin.yml
 ```
 
 You should now see NVIDIA GPUs in the output of:
 ```
-sudo kubectl describe nodes | grep nvidia.com/gpu
+kubectl describe nodes | grep nvidia.com/gpu
 ```
 e.g.
 ```
-  nvidia.com/gpu:     1
-  nvidia.com/gpu:     1
+  nvidia.com/gpu:     2
+  nvidia.com/gpu:     2
   nvidia.com/gpu     0           0
 ```
+
+Note that with time-slicing enabled, each GPU now shows as 2 available GPUs that can be shared between pods.
 
 # Deploy Open WebUI with Ollama
 
@@ -169,22 +190,6 @@ kubectl apply -f secret.yaml
 kubectl apply -f pvc.yaml
 kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
-```
-
-You may need to update the deployment to be more patient since the download of the model weights is unlikely to be faster than the readiness probe timeout, leading to infinite crashlooping/downloading:
-```
-kubectl patch deployment mistral-7b --type=json -p='[
-  {
-    "op": "replace",
-    "path": "/spec/template/spec/containers/0/livenessProbe/initialDelaySeconds",
-    "value": 6000
-  },
-  {
-    "op": "replace",
-    "path": "/spec/template/spec/containers/0/readinessProbe/initialDelaySeconds",
-    "value": 6000
-  }
-]'
 ```
 
 ## Deploy Helix.ml configured as a frontend to vLLM
