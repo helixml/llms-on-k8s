@@ -28,7 +28,7 @@ spec:
         image: vllm/vllm-openai:latest
         command: ["/bin/sh", "-c"]
         args: [
-          "vllm serve --model thenlper/gte-small --trust-remote-code"
+          "vllm serve thenlper/gte-small --trust-remote-code"
         ]
         env:
         - name: HUGGING_FACE_HUB_TOKEN
