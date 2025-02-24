@@ -27,7 +27,7 @@ envVariables:
   INFERENCE_PROVIDER: "openai" # Valid values: togetherai, openai, helix
   FINETUNING_PROVIDER: "openai" # It's likely you want to use the same provider for both
   OPENAI_API_KEY: "EMPTY"
-  OPENAI_BASE_URL: "http://vllm-server.default.svc.cluster.local/v1"
+  OPENAI_BASE_URL: "http://vllm-llama.default.svc.cluster.local/v1"
   TOGETHER_API_KEY: ""
   # Keycloak location
   KEYCLOAK_URL: http://keycloak:80/auth
