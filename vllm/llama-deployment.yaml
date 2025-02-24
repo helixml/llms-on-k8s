@@ -28,7 +28,7 @@ spec:
         image: vllm/vllm-openai:latest
         command: ["/bin/sh", "-c"]
         args: [
-          "vllm serve neuralmagic/Meta-Llama-3-70B-Instruct-FP8 --trust-remote-code --quantization fp8 --gpu-memory-utilization 0.95 --max-model-len 4096"
+          "vllm serve microsoft/phi-4 --trust-remote-code --quantization fp16 --gpu-memory-utilization 0.98 --max-model-len 8192 --tensor-parallel-size 1"
         ]
         env:
         - name: HUGGING_FACE_HUB_TOKEN
