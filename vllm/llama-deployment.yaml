@@ -30,7 +30,7 @@ spec:
         image: vllm/vllm-openai:latest
         command: ["/bin/sh", "-c"]
         args: [
-          "vllm serve meta-llama/Llama-3.1-8B --max-model-len 8192 --gpu-memory-utilization 0.65 --trust-remote-code --chat-template 'llama-2'"
+          "vllm serve microsoft/phi-4 --max-model-len 8192 --gpu-memory-utilization 0.65 --trust-remote-code"
         ]
         env:
         - name: HUGGING_FACE_HUB_TOKEN
