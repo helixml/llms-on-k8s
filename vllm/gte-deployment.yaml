@@ -30,7 +30,7 @@ spec:
         image: vllm/vllm-openai:latest
         command: ["/bin/sh", "-c"]
         args: [
-          "vllm serve Alibaba-NLP/gte-Qwen2-7B-instruct --trust-remote-code"
+          "vllm serve Alibaba-NLP/gte-Qwen2-7B-instruct --gpu-memory-utilization 0.25 --trust-remote-code"
         ]
         env:
         - name: HUGGING_FACE_HUB_TOKEN
