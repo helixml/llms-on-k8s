@@ -50,6 +50,8 @@ controlplane:
     openai:
       baseUrl: "http://vllm-llama.default.svc.cluster.local/v1"
       apiKey: "EMPTY"
+    togetherai:
+      apiKey: "ignored"
 
 # Environment variables that will be added to the configmap
 envVariables:
