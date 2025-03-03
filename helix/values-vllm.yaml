@@ -11,7 +11,7 @@ image:
   # It's good practice to pin the version of the software you're running!
   # Get this from https://get.helix.ml/latest.txt or check https://github.com/helixml/helix/releases
   # YOU MUST SET THIS VALUE OR IT WILL NOT WORK
-  tag: "1.6.12"
+  tag: "1.6.13"
 
 controlplane:
   # Haystack configuration to use haystack for production-ready RAG. If set,
@@ -24,7 +24,7 @@ controlplane:
     embeddingsDim: "3584"
     chunkSize: "1000"
     chunkOverlap: "50"
-    pgvectorDsn: "postgresql://postgres:postgres@my-helix-controlplane-pgvector:5432/postgres"
+    pgvectorDsn: "postgresql://postgres:pgvector@my-helix-controlplane-pgvector:5432/postgres"
 
   # RAG configuration
   rag:
@@ -50,8 +50,6 @@ controlplane:
     openai:
       baseUrl: "http://vllm-llama.default.svc.cluster.local/v1"
       apiKey: "EMPTY"
-    togetherai:
-      apiKey: "ignored"
 
 # Environment variables that will be added to the configmap
 envVariables:
@@ -96,7 +94,7 @@ pgvector:
   enabled: true
   auth:
     username: postgres
-    password: postgres
+    password: pgvector
     database: postgres
   persistence:
     enabled: true
