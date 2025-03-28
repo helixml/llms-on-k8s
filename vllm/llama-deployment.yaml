@@ -42,12 +42,12 @@ spec:
         - containerPort: 8000
         resources:
           limits:
-            cpu: "24"
-            memory: "100Gi"
+            cpu: "4"
+            memory: "10Gi"
             nvidia.com/gpu: "1"
           requests:
-            cpu: "12"
-            memory: "80Gi"
+            cpu: "8"
+            memory: "20Gi"
             nvidia.com/gpu: "1"
         volumeMounts:
         - mountPath: /root/.cache/huggingface
