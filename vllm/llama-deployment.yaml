@@ -46,8 +46,8 @@ spec:
             memory: "10Gi"
             nvidia.com/gpu: "1"
           requests:
-            cpu: "8"
-            memory: "20Gi"
+            cpu: "2"
+            memory: "8Gi"
             nvidia.com/gpu: "1"
         volumeMounts:
         - mountPath: /root/.cache/huggingface
