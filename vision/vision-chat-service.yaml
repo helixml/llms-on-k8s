@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vision-chat
+  namespace: default
+spec:
+  ports:
+  - name: http-vision-chat
+    port: 80
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: vision-chat
+  sessionAffinity: None
+  type: ClusterIP 
