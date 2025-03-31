@@ -20,11 +20,24 @@ controlplane:
   # inference (embeddings) provider.
   haystack:
     enabled: true
-    embeddingsModel: "Alibaba-NLP/gte-Qwen2-7B-instruct"
-    embeddingsDim: "3584"
+    embeddingsModel: "MrLight/dse-qwen2-2b-mrl-v1"
+    embeddingsDim: "1536"
     chunkSize: "1000"
     chunkOverlap: "50"
     pgvectorDsn: "postgresql://postgres:pgvector@my-helix-controlplane-pgvector:5432/postgres"
+    env:
+      - name: RAG_VISION_ENABLED
+        value: "true"
+      - name: RAG_VISION_BASE_URL
+        value: "http://vision-embedding.default.svc.cluster.local/v1"
+      - name: RAG_VISION_API_KEY
+        value: "EMPTY"
+      - name: RAG_VISION_EMBEDDINGS_MODEL
+        value: "MrLight/dse-qwen2-2b-mrl-v1"
+      - name: RAG_VISION_EMBEDDINGS_DIM
+        value: "1536"
+      - name: RAG_VISION_PGVECTOR_TABLE
+        value: "haystack_documents_vision"
 
   # RAG configuration
   rag:
@@ -45,7 +58,7 @@ controlplane:
   # You can also add dynamic providers at runtime through the Dashboard
   providers:
     vllm:
-      baseUrl: "http://vllm-gte.default.svc.cluster.local/v1"
+      baseUrl: "http://vision-embedding.default.svc.cluster.local/v1"
       apiKey: "EMPTY"
     openai:
       baseUrl: "http://vllm-llama.default.svc.cluster.local/v1"
