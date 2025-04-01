@@ -1,0 +1,48 @@
+name: CI for GenAI
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  HELIX_URL: ${{ vars.HELIX_URL }}
+  HELIX_API_KEY: ${{ secrets.HELIX_API_KEY }}
+
+jobs:
+  test-and-comment:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install helix CLI
+        run: curl -sL -O https://get.helix.ml/install.sh && bash install.sh --cli -y
+
+      - name: Test the helix app
+        run: helix test -f test-files/exchange-rates.yaml
+
+      - name: PR comment with file
+        if: always()
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: summary_latest.md
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install helix CLI
+        run: curl -sL -O https://get.helix.ml/install.sh && bash install.sh --cli -y
+
+      - name: Test the helix app
+        run: helix test -f test-files/exchange-rates.yaml
+
+      - name: Apply changes
+        if: success()
+        run: helix apply -f exchangerates.yaml
