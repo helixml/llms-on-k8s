@@ -231,12 +231,12 @@ helm upgrade --install keycloak oci://registry-1.docker.io/bitnamicharts/keycloa
 
 ```
 cd helix
-helm repo add helix https://charts.helix.ml
+helm repo add helix https://charts.helixml.tech
 helm repo update
 ```
 
 ```
-export LATEST_RELEASE=$(curl -s https://get.helix.ml/latest.txt)
+export LATEST_RELEASE=$(curl -s https://get.helixml.tech/latest.txt)
 helm upgrade --install my-helix-controlplane helix/helix-controlplane \
   -f values-vllm.yaml \
   --set image.tag="${LATEST_RELEASE}"
