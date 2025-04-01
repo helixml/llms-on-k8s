@@ -45,4 +45,4 @@ jobs:
 
       - name: Apply changes
         if: success()
-        run: helix apply -f exchangerates.yaml
+        run: helix apply -f test-files/exchange-rates.yaml
