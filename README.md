@@ -154,7 +154,7 @@ helm repo update
 ```
 
 ```
-helm upgrade --install --set image.tag=v0.5.7 open-webui open-webui/open-webui
+helm upgrade --install --set image.tag=v0.6.0 open-webui open-webui/open-webui
 ```
 
 (Use a newer version of webui if there's one available, check on [webui github releases](https://github.com/open-webui/open-webui/releases))
