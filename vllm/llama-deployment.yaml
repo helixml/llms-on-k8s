@@ -30,7 +30,7 @@ spec:
         image: vllm/vllm-openai:latest
         command: ["/bin/sh", "-c"]
         args: [
-          "vllm serve microsoft/phi-4 --trust-remote-code --max-model-len 16384 --gpu-memory-utilization 0.8"
+          "vllm serve microsoft/phi-4 --trust-remote-code --max-model-len 32768 --gpu-memory-utilization 0.8"
         ]
         env:
         - name: HUGGING_FACE_HUB_TOKEN
