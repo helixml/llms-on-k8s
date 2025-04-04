@@ -52,16 +52,16 @@ controlplane:
   # Inference configuration
   inference:
     # Valid values: openai, togetherai, helix
-    defaultProvider: "openai"
+    defaultProvider: "vllm"
 
   # Provider configurations (examples of the three fixed global provider names)
   # You can also add dynamic providers at runtime through the Dashboard
   providers:
     vllm:
-      baseUrl: "http://vision-embedding.default.svc.cluster.local/v1"
+      baseUrl: "http://vision-chat.default.svc.cluster.local/v1"
       apiKey: "EMPTY"
     openai:
-      baseUrl: "http://vllm-llama.default.svc.cluster.local/v1"
+      baseUrl: "http://vision-embedding.default.svc.cluster.local/v1"
       apiKey: "EMPTY"
 
 # Environment variables that will be added to the configmap
