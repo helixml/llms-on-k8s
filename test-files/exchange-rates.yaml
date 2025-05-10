@@ -16,7 +16,7 @@ spec:
       - name: check usd to gbp rate
         steps:
           - prompt: what is the usd to gbp exchange rate?
-            expected_output: the usd to gbp exchange rate. it's ok if it includes additional information such as the rate being based on the latest data.
+            expected_output: the usd to gbp exchange rate. it's ok if it includes additional information such as the rate being based on the latest data
 
       apis:
         - name: Exchange Rates API
